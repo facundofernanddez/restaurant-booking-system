@@ -11,6 +11,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
+import { type NextPageContext } from "next";
 
 /**
  * 1. CONTEXT
@@ -24,9 +25,12 @@ import { db } from "@/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: NextPageContext) => {
+  const { res, req } = opts;
   return {
     db,
+    res,
+    req,
     ...opts,
   };
 };
