@@ -20,7 +20,11 @@ export default function LoginPage() {
     setInput((prev) => ({ ...prev, [name]: value }));
   };
 
-  const { mutate: login, isError } = api.admin.login.useMutation();
+  const { mutate: login, isError } = api.admin.login.useMutation({
+    onSuccess: () => {
+      router.push("/dashboard");
+    },
+  });
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -31,6 +35,8 @@ export default function LoginPage() {
             className="mx-auto h-12 w-auto"
             src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
             alt="Workflow"
+            width={100}
+            height={100}
           />
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
             Sign in to your account
