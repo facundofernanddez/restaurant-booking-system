@@ -10,7 +10,7 @@ export const adminRouter = createTRPCRouter({
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { res } = ctx;
+      const { headers } = ctx;
       const { email, password } = input;
 
       if (
@@ -26,7 +26,7 @@ export const adminRouter = createTRPCRouter({
           .setExpirationTime("1h")
           .sign(new TextEncoder().encode(getJwtSecretKey()));
 
-        res?.setHeader(
+        headers.set(
           "Set-Cookie",
           cookie.serialize("user-token", token, {
             httpOnly: true,
