@@ -1,3 +1,18 @@
+import { api } from "@/trpc/react";
+
 export default function DashboardPage() {
-  return <div>Dashboard</div>;
+  const { mutate } = api.admin.sensitive.useMutation();
+
+  return (
+    <div>
+      Dashboard{" "}
+      <button
+        onClick={() => {
+          mutate;
+        }}
+      >
+        top secret
+      </button>
+    </div>
+  );
 }

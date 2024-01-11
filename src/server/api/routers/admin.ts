@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { SignJWT } from "jose";
 import { nanoid } from "nanoid";
@@ -26,7 +26,7 @@ export const adminRouter = createTRPCRouter({
           .setExpirationTime("1h")
           .sign(new TextEncoder().encode(getJwtSecretKey()));
 
-        headers.set(
+        headers.append(
           "Set-Cookie",
           cookie.serialize("user-token", token, {
             httpOnly: true,
@@ -43,4 +43,8 @@ export const adminRouter = createTRPCRouter({
         message: "Invalid credentials",
       });
     }),
+
+  sensitive: adminProcedure.mutation(() => {
+    return "sensitive";
+  }),
 });
