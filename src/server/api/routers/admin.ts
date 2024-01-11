@@ -26,7 +26,7 @@ export const adminRouter = createTRPCRouter({
           .setExpirationTime("1h")
           .sign(new TextEncoder().encode(getJwtSecretKey()));
 
-        headers.append(
+        headers.set(
           "Set-Cookie",
           cookie.serialize("user-token", token, {
             httpOnly: true,
@@ -34,6 +34,8 @@ export const adminRouter = createTRPCRouter({
             secure: process.env.NODE_ENV === "production",
           }),
         );
+
+        console.log(headers.get("Set-Cookie"));
 
         return { success: true };
       }
