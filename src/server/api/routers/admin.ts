@@ -5,13 +5,16 @@ import { nanoid } from "nanoid";
 import { getJwtSecretKey } from "@/lib/auth";
 import cookie from "cookie";
 import { TRPCError } from "@trpc/server";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const adminRouter = createTRPCRouter({
   login: publicProcedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { headers } = ctx;
+      // const { headers } = ctx;
       const { email, password } = input;
+      // const res = new NextResponse();
 
       if (
         email === process.env.ADMIN_EMAIL &&
@@ -26,16 +29,14 @@ export const adminRouter = createTRPCRouter({
           .setExpirationTime("1h")
           .sign(new TextEncoder().encode(getJwtSecretKey()));
 
-        headers.set(
-          "Set-Cookie",
-          cookie.serialize("user-token", token, {
-            httpOnly: true,
-            path: "/",
-            secure: process.env.NODE_ENV === "production",
-          }),
-        );
+        cookies().set("user-token", token, {
+          httpOnly: true,
+          path: "/",
+          secure: process.env.NODE_ENV !== "production",
+          sameSite: "lax",
+        });
 
-        console.log(headers.get("Set-Cookie"));
+        console.log(cookies().get("user-token")?.value);
 
         return { success: true };
       }

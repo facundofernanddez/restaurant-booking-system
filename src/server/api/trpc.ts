@@ -12,6 +12,7 @@ import { ZodError } from "zod";
 
 import { db } from "@/server/db";
 import { verifyAuth } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 /**
  * 1. CONTEXT
@@ -54,9 +55,10 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 });
 
 const isAdmin = t.middleware(async ({ ctx, next }) => {
-  const { headers } = ctx;
+  // const { headers } = ctx;
 
-  const token = headers.get("user-token");
+  // const token = headers.get("user-token");
+  const token = cookies().get("user-token")?.value;
 
   if (!token) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Missin user token" });
